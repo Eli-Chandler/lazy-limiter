@@ -36,11 +36,12 @@ await bucket.acquire()
 ```
 
 ```python
-bucket = KeyedTokenBucket(token_capacity=1, tokens_per_second=0.5)
+bucket = KeyedTokenBucket(capacity=1, refill_per_second=0.5)
 # No blocking here, hello and world each have their own bucket
 await keyed.acquire("hello")
 await keyed.acquire("world")
 
 # 0.5 second delay here because "world" bucket would be empty
 await keyed.acquire("world")
+# hello and world bucket are now full, and have no waiters, so they will be removed
 ```

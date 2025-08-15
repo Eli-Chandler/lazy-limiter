@@ -11,13 +11,13 @@ class KeyedTokenBucket:
 
     def __init__(
         self,
-        token_capacity: int | float,
-        tokens_per_second: int | float,
+        capacity: int | float,
+        refill_per_second: int | float,
         starting_tokens: Optional[int | float] = None,
     ):
         self._token_buckets = defaultdict(
             lambda: TokenBucket(
-                token_capacity, tokens_per_second, starting_tokens=starting_tokens
+                capacity, refill_per_second, starting_tokens=starting_tokens
             )
         )
         self._kill_bucket_tasks = {}
