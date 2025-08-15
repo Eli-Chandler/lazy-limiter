@@ -23,3 +23,24 @@ It is called "lazy" for two reasons:
 ```bash
 pip install git+<this_repo_url>
 ```
+
+## Usage
+
+```python
+from lazy_limiter import TokenBucket, KeyedTokenBucket
+```
+
+```python
+bucket = TokenBucket(capacity=5, refill_per_second=1)
+await bucket.acquire()
+```
+
+```python
+bucket = KeyedTokenBucket(token_capacity=1, tokens_per_second=0.5)
+# No blocking here, hello and world each have their own bucket
+await keyed.acquire("hello")
+await keyed.acquire("world")
+
+# 0.5 second delay here because "world" bucket would be empty
+await keyed.acquire("world")
+```
