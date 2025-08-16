@@ -39,7 +39,7 @@ class KeyedTokenBucket:
     def acquire_nowait(self, key: str, tokens: int | float = 1) -> bool:
         bucket = self._token_buckets[key]
         res = bucket.acquire_nowait(tokens)
-        self._schedule_cleanup(bucket, res)
+        self._schedule_cleanup(key, bucket)
         return res
 
     def time_to_capacity(self, key: str, tokens: int | float) -> float:
