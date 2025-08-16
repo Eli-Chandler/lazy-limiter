@@ -20,6 +20,7 @@ async def test_acquire_waits_for_refill_total_elapsed(clock, assert_takes_time):
     with assert_takes_time(0):
         await tb.acquire(5)
 
+
 async def test_parallel_acquire(clock, assert_takes_time):
     tb = TokenBucket(capacity=10, refill_per_second=10, starting_tokens=0, clock=clock)
 
@@ -38,11 +39,13 @@ async def test_parallel_acquire(clock, assert_takes_time):
     assert approx(0.5) in (result_1, result_2)
     assert approx(1.0) in (result_1, result_2)
 
+
 async def test_take_all_tokens(clock, assert_takes_time):
     tb = TokenBucket(capacity=10, refill_per_second=10, starting_tokens=0, clock=clock)
     with assert_takes_time(1.0):
         await tb.acquire(10)
     assert tb.tokens == approx(0)
+
 
 async def test_take_more_than_capacity(clock, assert_takes_time):
     tb = TokenBucket(capacity=10, refill_per_second=10, starting_tokens=0, clock=clock)
@@ -75,3 +78,22 @@ def test_full_behaviour():
 
     tb._waiters = 1
     assert tb.is_full is False
+
+
+def test_acquire_nowait():
+    clock = lambda: 0  # Freeze time for testing
+    tb = TokenBucket(capacity=10, refill_per_second=10, starting_tokens=10, clock=clock)
+
+    assert tb.acquire_nowait(5) is True
+    assert tb._tokens == approx(5)
+
+    assert tb.acquire_nowait(6) is False
+    assert tb._tokens == approx(5)
+
+    tb._tokens = 10
+    assert tb.acquire_nowait(10) is True
+    assert tb._tokens == approx(0)
+
+    assert tb.acquire_nowait(1) is False
+    assert tb._tokens == approx(0)
+

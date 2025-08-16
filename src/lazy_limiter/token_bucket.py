@@ -16,7 +16,7 @@ class TokenBucket:
         capacity: int | float,
         refill_per_second: int | float,
         starting_tokens: Optional[int | float] = None,
-        clock: Callable[[], float] = None
+        clock: Callable[[], float] = None,
     ):
         self._tokens = float(
             starting_tokens if starting_tokens is not None else capacity
@@ -26,7 +26,6 @@ class TokenBucket:
         self._clock = clock if clock is not None else time.monotonic
         self._last_refill = self._clock()
         self._waiters = 0
-
 
     def _refill(self):
         now = self._clock()
