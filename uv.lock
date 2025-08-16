@@ -24,19 +24,34 @@ wheels = [
 name = "lazy-limiter"
 version = "0.1.0"
 source = { editable = "." }
+dependencies = [
+    { name = "looptime" },
+]
 
 [package.dev-dependencies]
 dev = [
+    { name = "looptime" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
 ]
 
 [package.metadata]
+requires-dist = [{ name = "looptime", specifier = ">=0.3" }]
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "looptime", specifier = ">=0.3" },
     { name = "pytest", specifier = ">=8.4.1" },
     { name = "pytest-asyncio", specifier = ">=1.1.0" },
+]
+
+[[package]]
+name = "looptime"
+version = "0.3"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/18/f5/d76d2087756b2639b4040ffbe68ee9d754e787fb65b99cc77cdbf0212e84/looptime-0.3.tar.gz", hash = "sha256:d07eb6d6c29062d1718833fa643da8e4fe79c2d3950cacc3093d14f564e377cb", size = 39670, upload-time = "2025-06-24T14:05:23.329Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/bd/1f/d38d1cfafe3d332a31277923b1bc53ebe4b1e0c89a60312d1f313cb10fd5/looptime-0.3-py3-none-any.whl", hash = "sha256:1479825d8cd940fdc56ad346ca6ab3f49772aa789e1e5fa587f71280c614b440", size = 25971, upload-time = "2025-06-24T14:05:22.258Z" },
 ]
 
 [[package]]
