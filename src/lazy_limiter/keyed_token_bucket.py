@@ -34,7 +34,21 @@ class KeyedTokenBucket:
     async def acquire(self, key: str, tokens: int | float = 1) -> None:
         bucket = self._token_buckets[key]
         await bucket.acquire(tokens)
+        self._schedule_cleanup(key, bucket)
 
+    def acquire_nowait(self, key: str, tokens: int | float = 1) -> bool:
+        bucket = self._token_buckets[key]
+        res = bucket.acquire_nowait(tokens)
+        self._schedule_cleanup(bucket, res)
+        return res
+
+    def time_to_capacity(self, key: str, tokens: int | float) -> float:
+        bucket = self._token_buckets[key]
+        res =  bucket.time_to_capacity(tokens)
+        self._schedule_cleanup(key, bucket)
+        return res
+
+    def _schedule_cleanup(self, key: str, bucket: TokenBucket) -> None:
         deadline = (
             self._clock()
             + bucket.time_to_capacity(bucket.token_capacity)
