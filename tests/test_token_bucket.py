@@ -1,7 +1,5 @@
 from lazy_limiter import TokenBucketRateLimiter
-import pytest
 from pytest import approx
-import asyncio
 
 
 class Clock:

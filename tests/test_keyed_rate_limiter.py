@@ -1,11 +1,7 @@
-# test_keyed_rate_limiter.py
 import asyncio
-import pytest
 
-# Replace these imports with your package/module paths
-# from your_module import KeyedRateLimiter, TokenBucketRateLimiter
 from lazy_limiter import TokenBucketRateLimiter, KeyedRateLimiter
-from tests.utils import assert_takes_time
+from .utils import assert_takes_time
 
 
 async def test_keyed_rate_limiter():

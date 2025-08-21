@@ -1,13 +1,11 @@
 import asyncio
 import itertools
-from contextlib import contextmanager
-
 import pytest
 
 from lazy_limiter.base import RateLimiter
 from unittest.mock import Mock
 
-from tests.utils import assert_takes_time
+from .utils import assert_takes_time
 
 
 class MockedRateLimiter(RateLimiter):
