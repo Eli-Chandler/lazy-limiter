@@ -6,9 +6,7 @@ readme = "README.md"
 authors = [
     { name = "eli", email = "eli.chandler@gmail.com" }
 ]
-requires-python = ">=3.12"
-dependencies = []
-
+requires-python = ">=3.10"
 
 [build-system]
 requires = ["hatchling"]
@@ -19,7 +17,6 @@ asyncio_mode = "auto"
 
 [dependency-groups]
 dev = [
-    "looptime>=0.3",
     "pytest>=8.4.1",
     "pytest-asyncio>=1.1.0",
 ]
