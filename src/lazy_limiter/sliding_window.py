@@ -49,4 +49,3 @@ class SlidingWindowRateLimiter(RateLimiter):
         raise RuntimeError(
             "Couldn't get enough tokens even after fully evicting everything. Base class should guard against this. This should not happen."
         )
-

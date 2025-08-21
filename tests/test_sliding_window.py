@@ -17,7 +17,9 @@ async def test_token_bucket_rate_limiter():
     # Create a TokenBucketRateLimiter with a capacity of 10 tokens and a refill rate of 1 token per second
     clock = Clock()
 
-    limiter = SlidingWindowRateLimiter(requests_per_window=10, window_seconds=1, clock=clock)
+    limiter = SlidingWindowRateLimiter(
+        requests_per_window=10, window_seconds=1, clock=clock
+    )
 
     # Check initial available tokens
     assert limiter.available == 10
