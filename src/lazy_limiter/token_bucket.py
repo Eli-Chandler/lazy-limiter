@@ -1,89 +1,46 @@
-import asyncio
 import time
-from typing import Optional, Callable
+from typing import Callable
+
+from lazy_limiter.base import RateLimiter
 
 
-class TokenBucket:
-    token_capacity: float
-    tokens_per_second: float
-    _tokens: float
-    _last_refill: float
-    _waiters: int
-    _clock: Callable[[], float]
-
+class TokenBucketRateLimiter(RateLimiter):
     def __init__(
         self,
         capacity: int | float,
         refill_per_second: int | float,
-        starting_tokens: Optional[int | float] = None,
+        starting_tokens: int | float = None,
         clock: Callable[[], float] = None,
     ):
+        super().__init__()
+        self._token_capacity = float(capacity)
+        self._tokens_per_second = float(refill_per_second)
         self._tokens = float(
             starting_tokens if starting_tokens is not None else capacity
         )
-        self.token_capacity = float(capacity)
-        self.tokens_per_second = float(refill_per_second)
-        self._clock = clock if clock is not None else time.monotonic
-        self._last_refill = self._clock()
-        self._waiters = 0
+        self._last_refill = clock() if clock else 0.0
+        self._clock = clock if clock is not None else lambda: time.monotonic()
 
-    def _refill(self):
+    @property
+    def available(self) -> int | float:
         now = self._clock()
         elapsed = now - self._last_refill
         self._last_refill = now
-
-        if elapsed <= 0:
-            return
-
-        new_tokens = elapsed * self.tokens_per_second
-        self._tokens = min(self.token_capacity, self._tokens + new_tokens)
-
-    def time_to_capacity(self, tokens: int | float) -> float:
-        if tokens > self.token_capacity:
-            raise ValueError(
-                f"Tokens requested ({tokens}) exceed bucket capacity ({self.token_capacity})"
-            )
-
-        if tokens - self._tokens <= 0:
-            return 0.0
-
-        return (tokens - self._tokens) / self.tokens_per_second
-
-    async def acquire(self, tokens: int | float = 1) -> None:
-        if self.acquire_nowait(tokens):
-            return
-
-        try:
-            self._waiters += 1
-            while True:
-                if self.acquire_nowait(tokens):
-                    return
-                # The amount of time we need to wait for the bucket to possibly have enough tokens
-                await asyncio.sleep(self.time_to_capacity(tokens))
-        finally:
-            self._waiters -= 1
-
-    def acquire_nowait(self, tokens: int | float = 1) -> bool:
-        if tokens < 0:
-            raise ValueError("Tokens must be a non-negative number")
-        if tokens > self.token_capacity:
-            raise ValueError(
-                f"Tokens requested ({tokens}) exceed bucket capacity ({self.token_capacity})"
-            )
-
-        self._refill()
-        if self._tokens >= tokens:
-            self._tokens -= tokens
-            return True
-        return False
-
-    @property
-    def is_full(self) -> bool:
-        self._refill()
-        # Check if no waiters, otherwise those tokens are about to get spent so the bucket is not considered full
-        return self._tokens >= self.token_capacity and self._waiters == 0
-
-    @property
-    def tokens(self) -> float:
-        self._refill()
+        self._tokens = min(
+            self._token_capacity, self._tokens + elapsed * self._tokens_per_second
+        )
         return self._tokens
+
+    @property
+    def capacity(self) -> int | float:
+        return self._token_capacity
+
+    def consume(self, requests: int | float = 1) -> None:
+        self._tokens -= requests
+
+    def time_to_available(self, requests: int | float = 1) -> float:
+        available = self.available
+        if requests <= available:
+            return 0.0
+        needed = requests - available
+        return needed / self._tokens_per_second

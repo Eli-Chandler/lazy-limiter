@@ -24,9 +24,6 @@ wheels = [
 name = "lazy-limiter"
 version = "0.1.0"
 source = { editable = "." }
-dependencies = [
-    { name = "looptime" },
-]
 
 [package.dev-dependencies]
 dev = [
@@ -36,7 +33,6 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "looptime", specifier = ">=0.3" }]
 
 [package.metadata.requires-dev]
 dev = [

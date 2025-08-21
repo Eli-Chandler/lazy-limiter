@@ -7,9 +7,7 @@ authors = [
     { name = "eli", email = "eli.chandler@gmail.com" }
 ]
 requires-python = ">=3.12"
-dependencies = [
-    "looptime>=0.3",
-]
+dependencies = []
 
 
 [build-system]

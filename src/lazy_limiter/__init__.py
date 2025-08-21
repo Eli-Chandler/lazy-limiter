@@ -1,7 +1,7 @@
-from .token_bucket import TokenBucket
-from .keyed_token_bucket import KeyedTokenBucket
+from .token_bucket import TokenBucketRateLimiter
+from .keyed_rate_limiter import KeyedRateLimiter
 
 __all__ = [
-    "TokenBucket",
-    "KeyedTokenBucket",
+    "TokenBucketRateLimiter",
+    "KeyedRateLimiter",
 ]
